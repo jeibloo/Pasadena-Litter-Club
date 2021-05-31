@@ -3,7 +3,7 @@ import os
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash_dependencies import Input, Output
+from dash.dependencies import Input, Output
 # Bootstrap errata
 import dash_bootstrap_components as dbc
 # Plotly express errata
@@ -37,10 +37,10 @@ CONTENT_STYLE = {
 # Navigation sidebar
 sidebar = html.Div(
     [
-        html.H2("Sidebar", classname="display-4"),
+        html.H2("Sidebar", className="display-4"),
         html.Hr(),
         html.P(
-            "Sidebar stuff", classname="lead"
+            "Sidebar stuff", className="lead"
         ),
         dbc.Nav(
             [
@@ -57,7 +57,7 @@ sidebar = html.Div(
 
 # Main body
 content = html.Div([
-    dcc.DropDown(
+    dcc.Dropdown(
         id="page-content", 
         options=[{'label': i, 'value': i} for i in ['Gwinn Park', 'Arroyo Seco']],
         value='LA'
