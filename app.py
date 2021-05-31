@@ -6,6 +6,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 # Bootstrap errata
 import dash_bootstrap_components as dbc
+from flask import send_from_directory
 # Plotly express errata
 import plotly.express as px
 
@@ -24,12 +25,12 @@ SIDEBAR_STYLE = {
     "top": 0,
     "left": 0,
     "bottom": 0,
-    "width": "16rem",
-    "padding": "2rem 1rem",
+    "width": "24rem",
+    "padding": "2rem 2rem",
     "background-color": "#36beff"
 }
 CONTENT_STYLE = {
-    "margin-left": "18rem",
+    "margin-left": "30rem",
     "margin-right": "2rem",
     "padding": "2rem 1rem"
 }
@@ -40,7 +41,9 @@ sidebar = html.Div(
         html.H2("Water's Water", className="display-4"),
         html.Hr(),
         html.P(
-            "Cool links for cool kidz", className="lead"
+            '''This website is a fun (or at least interesting!) and interactive presentation of litter 
+            near and around our rivers — the very same rivers that come from 
+            our mountains and feed into our oceans.''', className="lead"
         ),
         dbc.Nav(
             [
@@ -64,7 +67,8 @@ content = html.Div([
         options=[{'label': i, 'value': i} for i in ['Gwinn Park', 'Arroyo Seco']],
         value='LA'
         ),
-    html.Div(id="display-value")
+    html.Div(id="display-value"),
+    html.H1("Look skit! No hands!")
     ], 
     style=CONTENT_STYLE
 )
@@ -74,7 +78,8 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 @app.callback(dash.dependencies.Output('display-value', 'children'),
               [dash.dependencies.Input('dropdown', 'value')])
 def display_value(value):
-    return 'You have selected "{}"'.format(value)
+    if value == "/":
+        return 'You have selected "{}"'.format(value)
 
 if __name__ == '__main__':
     app.run_server(debug=False)
