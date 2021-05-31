@@ -26,7 +26,7 @@ SIDEBAR_STYLE = {
     "bottom": 0,
     "width": "16rem",
     "padding": "2rem 1rem",
-    "background-color": "#aabe44"
+    "background-color": "#36beff"
 }
 CONTENT_STYLE = {
     "margin-left": "18rem",
@@ -37,16 +37,18 @@ CONTENT_STYLE = {
 # Navigation sidebar
 sidebar = html.Div(
     [
-        html.H2("Sidebar", className="display-4"),
+        html.H2("Water's Water", className="display-4"),
         html.Hr(),
         html.P(
-            "Sidebar stuff", className="lead"
+            "Cool links for cool kidz", className="lead"
         ),
         dbc.Nav(
             [
                 dbc.NavLink("Home", href="/", active="exact"),
+                html.Br(),
                 dbc.NavLink("Donation", href="/Donation", active="exact"),
-                dbc.NavLink("Contact Your Rep", href="/contact", active="exact"),
+                html.Br(),
+                dbc.NavLink("Contact Your Rep", href="/contact", active="exact")
             ],
             vertical=True,
             pills=True,
