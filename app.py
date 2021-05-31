@@ -3,22 +3,71 @@ import os
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash_dependencies import Input, Output
+# Bootstrap errata
+import dash_bootstrap_components as dbc
+# Plotly express errata
+import plotly.express as px
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+### Info
+app.title = 'Pasadena Litter Club'
+
 server = app.server
 
-app.layout = html.Div([
-    html.H2('Hello World'),
-    dcc.Dropdown(
-        id='dropdown',
-        options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
+### Style variables
+SIDEBAR_STYLE = {
+    "position": "fixed",
+    "top": 0,
+    "left": 0,
+    "bottom": 0,
+    "width": "16rem",
+    "padding": "2rem 1rem",
+    "background-color": "#aabe44"
+}
+CONTENT_STYLE = {
+    "margin-left": "18rem",
+    "margin-right": "2rem",
+    "padding": "2rem 1rem"
+}
+
+# Navigation sidebar
+sidebar = html.Div(
+    [
+        html.H2("Sidebar", classname="display-4"),
+        html.Hr(),
+        html.P(
+            "Sidebar stuff", classname="lead"
+        ),
+        dbc.Nav(
+            [
+                dbc.NavLink("Home", href="/", active="exact"),
+                dbc.NavLink("Donation", href="/Donation", active="exact"),
+                dbc.NavLink("Contact Your Rep", href="/contact", active="exact"),
+            ],
+            vertical=True,
+            pills=True,
+        ),
+    ],
+    style=SIDEBAR_STYLE,
+)
+
+# Main body
+content = html.Div([
+    dcc.DropDown(
+        id="page-content", 
+        options=[{'label': i, 'value': i} for i in ['Gwinn Park', 'Arroyo Seco']],
         value='LA'
-    ),
-    html.Div(id='display-value')
-])
+        ),
+    html.Div(id="display-value")
+    ], 
+    style=CONTENT_STYLE
+)
+
+app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
 @app.callback(dash.dependencies.Output('display-value', 'children'),
               [dash.dependencies.Input('dropdown', 'value')])
@@ -26,4 +75,4 @@ def display_value(value):
     return 'You have selected "{}"'.format(value)
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
