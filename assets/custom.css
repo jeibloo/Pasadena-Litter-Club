@@ -1,0 +1,8 @@
+h1, h3 {
+    text-align: center;
+}
+
+#output-graph {
+    margin: 0rem auto;
+    justify-content: center;
+}

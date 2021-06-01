@@ -1,16 +1,24 @@
 import os
 
+# Dash stuff
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-# Bootstrap errata
 import dash_bootstrap_components as dbc
-from flask import send_from_directory
-# Plotly express errata
 import plotly.express as px
+# Pandas 
+import pandas as pd
+# Flask errata? jesus
+from flask import send_from_directory
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+### Get CSV
+# !index!, Date, Image\ URL, Lat, Long, Object, Material, Brand, Other 
+litter = pd.read_csv("./clean.csv")
+
+
+#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = [dbc.themes.CERULEAN]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
@@ -25,58 +33,121 @@ SIDEBAR_STYLE = {
     "top": 0,
     "left": 0,
     "bottom": 0,
-    "width": "24rem",
+    "width": "22rem",
     "padding": "2rem 2rem",
-    "background-color": "#36beff"
+    "background-color": "#44efff"
 }
 CONTENT_STYLE = {
-    "margin-left": "30rem",
-    "margin-right": "2rem",
+    "margin-left": "22rem",
+    "margin-right": "1rem",
     "padding": "2rem 1rem"
 }
+
+### Figures
+# Map
+map_fig = px.scatter_geo(litter,
+            lat="Lat", lon="Long",
+            color="Object",
+            color_continuous_scale=px.colors.diverging.Portland,
+            projection="equirectangular",
+            width=None, height=None)
+# Mapbox?
+map_key = os.environ["MAPBOX_KEY"]
+px.set_mapbox_access_token(map_key)
+mapbox_fig = px.scatter_mapbox(litter,
+                                lat="Lat",
+                                lon="Long",
+                                color="Object",
+                                color_continuous_scale=px.colors.cyclical.IceFire,
+                                zoom=13,
+                                size_max=15,
+                                hover_name="Brand",
+                                width=None, height=None).update_layout(
+                                    autosize=True, height=800, width=1000
+                                )
+
+# Treemap (boxy thingie)
+tree_fig = px.treemap(
+    litter, 
+        path=['Object', 'Material'],
+        values='Brand_id'
+)
+
+# Sunburst
+sunburst_fig = px.sunburst(
+    litter,
+    names='Object',
+    parents='Material',
+    values='Brand_id'
+)
 
 # Navigation sidebar
 sidebar = html.Div(
     [
-        html.H2("Water's Water", className="display-4"),
+        html.H2("Water & Litter", className="display-4"),
         html.Hr(),
         html.P(
-            '''This website is a fun (or at least interesting!) and interactive presentation of litter 
-            near and around our rivers — the very same rivers that come from 
-            our mountains and feed into our oceans.''', className="lead"
+            '''This website is a interactive presentation of litter 
+            near and around the Eaton Wash in Pasadena— the very same wash that
+            runs into the LA river and comes from 
+            our mountains and eventually feeds into our oceans.''', className="lead"
+        ),
+        html.Hr(),
+        html.P(
+
         ),
         dbc.Nav(
             [
-                dbc.NavLink("Home", href="/", active="exact"),
                 html.Br(),
-                dbc.NavLink("Donation", href="/Donation", active="exact"),
+                dbc.NavLink("Contact your Rep!", href="https://www.house.gov/representatives/find-your-representative", active="exact"),
                 html.Br(),
-                dbc.NavLink("Contact Your Rep", href="/contact", active="exact")
+                dbc.NavLink("Water Donation", href="https://www.charitywater.org/donate", active="exact")
             ],
-            vertical=True,
-            pills=True,
+            vertical=False,
+            pills=False,
         ),
     ],
     style=SIDEBAR_STYLE,
 )
 
+cell_ace = dbc.Container(
+    dbc.Row([
+        dbc.Col(
+            [
+                html.P('''Cellulose acetate is bad news! 
+                It's a plastic used as a filter for cigarettes, and in the process of being a filter
+                it absorbs all the bad chemicals such as [blank] from the cigarette.''')
+            ]
+        ),
+        dbc.Col(
+            [
+                html.Img(src='assets/ac_3d.png', className='img-fluid')
+            ]
+        )
+    ])
+)
+
 # Main body
 content = html.Div([
-    dcc.Dropdown(
-        id="page-content", 
-        options=[{'label': i, 'value': i} for i in ['Gwinn Park', 'Arroyo Seco']],
-        value='LA'
-        ),
     html.Div(id="display-value"),
-    html.H1("Look skit! No hands!")
+    html.H1("Welcome!"),
+    dcc.Graph(figure=mapbox_fig),
+    # Tree graph to show the material most found
+    html.H3("See which material was found the most!"),
+        dcc.Graph(figure=tree_fig),
+    # Show Cellulose Acetate info
+    html.Div([cell_ace]),
+    #html.H4("See which park had what!"),
+    #    dcc.Graph(figure=sunburst_fig)
     ], 
     style=CONTENT_STYLE
 )
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
-@app.callback(dash.dependencies.Output('display-value', 'children'),
-              [dash.dependencies.Input('dropdown', 'value')])
+#@app.callback(dash.dependencies.Output('display-value', 'children'),
+#              [dash.dependencies.Input('dropdown', 'value')])
+app.callback(dash.dependencies.Output('display-value', 'children'))
 def display_value(value):
     if value == "/":
         return 'You have selected "{}"'.format(value)
