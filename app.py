@@ -38,7 +38,7 @@ SIDEBAR_STYLE = {
     "background-color": "#44efff"
 }
 CONTENT_STYLE = {
-    "margin-left": "22rem",
+    "margin-left": "24rem",
     "margin-right": "1rem",
     "padding": "2rem 1rem"
 }
@@ -48,7 +48,7 @@ CONTENT_STYLE = {
 map_fig = px.scatter_geo(litter,
             lat="Lat", lon="Long",
             color="Object",
-            color_continuous_scale=px.colors.diverging.Portland,
+            color_continuous_scale=px.colors.diverging.Picnic,
             projection="equirectangular",
             width=None, height=None)
 # Mapbox?
@@ -58,20 +58,24 @@ mapbox_fig = px.scatter_mapbox(litter,
                                 lat="Lat",
                                 lon="Long",
                                 color="Object",
-                                color_continuous_scale=px.colors.cyclical.IceFire,
-                                zoom=13,
-                                size_max=15,
+                                color_continuous_scale=px.colors.cyclical.Edge,
+                                zoom=18,
+                                size_max=16,
+                                mapbox_style="basic",
+                                labels=litter.Brand,
+                                center={"lat":34.15884884293918, "lon":-118.08851355364331},
                                 hover_name="Brand",
                                 width=None, height=None).update_layout(
-                                    autosize=True, height=800, width=1000
+                                    autosize=True, height=800
                                 )
 
 # Treemap (boxy thingie)
 tree_fig = px.treemap(
     litter, 
         path=['Object', 'Material'],
-        values='Brand_id'
-)
+        values='Brand_id').update_layout(
+            autosize=True, height=800
+        )
 
 # Sunburst
 sunburst_fig = px.sunburst(
@@ -114,9 +118,11 @@ cell_ace = dbc.Container(
     dbc.Row([
         dbc.Col(
             [
-                html.P('''Cellulose acetate is bad news! 
+                html.P('''Cellulose acetate (plastic fibers) is bad news! 
                 It's a plastic used as a filter for cigarettes, and in the process of being a filter
-                it absorbs all the bad chemicals such as [blank] from the cigarette.''')
+                it absorbs all the bad chemicals such as nicotine and heavy metals from the cigarette. When it's
+                thrown onto the ground as it is commonly is, those same bad chemicals leach into the ground
+                polluting the soil and surrounding waters!''')
             ]
         ),
         dbc.Col(
@@ -143,7 +149,7 @@ content = html.Div([
     style=CONTENT_STYLE
 )
 
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
+app.layout = html.Div([html.Div(id="loading"),dcc.Location(id="url"), sidebar, content])
 
 #@app.callback(dash.dependencies.Output('display-value', 'children'),
 #              [dash.dependencies.Input('dropdown', 'value')])
