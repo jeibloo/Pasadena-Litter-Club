@@ -15,10 +15,13 @@ from flask import send_from_directory
 ### Get CSV
 # !index!, Date, Image\ URL, Lat, Long, Object, Material, Brand, Other 
 litter = pd.read_csv("./clean.csv")
+brands_litter = pd.read_csv("./brands_clean.csv")
+material_litter = pd.read_csv("./material_clean.csv")
+object_litter = pd.read_csv("./object_clean.csv")
 
 
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-external_stylesheets = [dbc.themes.CERULEAN]
+external_stylesheets = [dbc.themes.LUMEN]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
@@ -33,12 +36,12 @@ SIDEBAR_STYLE = {
     "top": 0,
     "left": 0,
     "bottom": 0,
-    "width": "22rem",
+    "width": "20rem",
     "padding": "2rem 2rem",
-    "background-color": "#44efff"
+    "background-color": "#77efff"
 }
 CONTENT_STYLE = {
-    "margin-left": "24rem",
+    "margin-left": "20rem",
     "margin-right": "1rem",
     "padding": "2rem 1rem"
 }
@@ -47,24 +50,24 @@ CONTENT_STYLE = {
 # Map
 map_fig = px.scatter_geo(litter,
             lat="Lat", lon="Long",
-            color="Object",
+            color="Tags",
             color_continuous_scale=px.colors.diverging.Picnic,
             projection="equirectangular",
             width=None, height=None)
 # Mapbox?
-map_key = os.environ["MAPBOX_KEY"]
+#map_key = os.environ["MAPBOX_KEY"]
+map_key = 'pk.eyJ1IjoiamFzb25ub3ZhIiwiYSI6ImNrcGNrMmk5djBuZngyd3A1bjVha3cybDcifQ.MfWorR0R8-KYh9lqMJf96g'
 px.set_mapbox_access_token(map_key)
 mapbox_fig = px.scatter_mapbox(litter,
                                 lat="Lat",
                                 lon="Long",
-                                color="Object",
                                 color_continuous_scale=px.colors.cyclical.Edge,
                                 zoom=18,
                                 size_max=16,
-                                mapbox_style="basic",
+                                mapbox_style="streets",
                                 labels=litter.Brand,
                                 center={"lat":34.15884884293918, "lon":-118.08851355364331},
-                                hover_name="Brand",
+                                hover_name="Tags",
                                 width=None, height=None).update_layout(
                                     autosize=True, height=800
                                 )
@@ -73,17 +76,22 @@ mapbox_fig = px.scatter_mapbox(litter,
 tree_fig = px.treemap(
     litter, 
         path=['Object', 'Material'],
-        values='Brand_id').update_layout(
+        values='Brand_id',
+        color='Material').update_layout(
             autosize=True, height=800
         )
 
-# Sunburst
-sunburst_fig = px.sunburst(
-    litter,
-    names='Object',
-    parents='Material',
-    values='Brand_id'
-)
+# Pie charts
+brands_litter.loc[brands_litter['amount'] < 3, 'brand'] = 'random brands'
+material_litter.loc[material_litter['amount'] < 10, 'material'] = 'random materials'
+object_litter.loc[object_litter['amount'] < 10, 'object'] = 'random objects'
+
+brand_pie = px.pie(brands_litter, values='amount', names='brand', title='Litter Brands',
+                    color_discrete_sequence=px.colors.sequential.RdBu).update_layout(autosize=True)
+obj_pie = px.pie(object_litter, values='amount', names='object', title='Most Common Objects Littered',
+                    color_discrete_sequence=px.colors.sequential.Rainbow).update_layout(autosize=True)
+mat_pie = px.pie(material_litter, values='amount', names='material', title='Most Common Litter Materials',
+                    color_discrete_sequence=px.colors.sequential.Turbo).update_layout(autosize=True)
 
 # Navigation sidebar
 sidebar = html.Div(
@@ -91,27 +99,75 @@ sidebar = html.Div(
         html.H2("Water & Litter", className="display-4"),
         html.Hr(),
         html.P(
-            '''This website is a interactive presentation of litter 
+            '''
+            This website is a interactive presentation of litter 
             near and around the Eaton Wash in Pasadena— the very same wash that
             runs into the LA river and comes from 
-            our mountains and eventually feeds into our oceans.''', className="lead"
+            our mountains and eventually feeds into our oceans.
+            ''', className="lead"
         ),
         html.Hr(),
         html.P(
-
+            ''' 
+            Data was collected over the course of 31~ days.
+            There was no emphasis on any part of any parks as many
+            pollutants from litter seep into the ground,
+            all ground area was attempted to be covered except
+            for areas that were inaccesible.
+            '''
         ),
+        html.P(
+            '''
+            Data is organised into three categories: object such as 'cigarettebutt',
+            material such as 'celluloseacetate', and brand such as 'Marlboro'. Most
+            detritus has no brand, so it will be labelled null when hovered over on
+            the map.
+            '''
+        ),
+        html.P(
+            '''
+            The data is not perfect, there are mistakes, but an honest attempt was made
+            in labelling the appropriate designations for all 1200+ entries.
+            '''
+        ),
+        html.P(
+            '''
+            The map is centered on the Gwinn (bottom) and Eaton Sunnyslope (top) parks,
+            data is also from the Ernest E. Debs Regional Park area
+            around 11.82 km (7.35 mi) away, which you can scroll to if you zoom out.
+            '''
+        ),
+        html.Hr(),
         dbc.Nav(
             [
                 html.Br(),
-                dbc.NavLink("Contact your Rep!", href="https://www.house.gov/representatives/find-your-representative", active="exact"),
+                dbc.NavLink("Contact your Representative to support the Green New Deal!", 
+                            href="https://www.house.gov/representatives/find-your-representative", active="exact"),
                 html.Br(),
-                dbc.NavLink("Water Donation", href="https://www.charitywater.org/donate", active="exact")
+                dbc.NavLink("Donate to a clean water charity!", 
+                            href="https://www.charitywater.org/donate", active="exact")
             ],
             vertical=False,
-            pills=False,
+            pills=True,
         ),
     ],
     style=SIDEBAR_STYLE,
+)
+
+map_area = dbc.Container(
+    html.Div([
+        dcc.Graph(figure=mapbox_fig),
+        html.P('''
+            The sheer quantity of trash was suprising. The amount of trash numbered at around 1,210 individual pieces.
+            Pasadena is a nice city but despite this the plague of litter is still a problem in public spaces!
+        '''),
+        html.P('''
+            The worst hotspots for trash were ironically where the no-smoking signs were. The cluster in the eastern part of
+            Eaton Sunnyslope had a 100+ cigarette butts, new to unbelievably old—the paper had already disappeared and all
+            that was left was a husk of cellulose acetate.
+        '''),
+        html.Hr()
+    ])
 )
 
 cell_ace = dbc.Container(
@@ -137,12 +193,20 @@ cell_ace = dbc.Container(
 content = html.Div([
     html.Div(id="display-value"),
     html.H1("Welcome!"),
-    dcc.Graph(figure=mapbox_fig),
+    html.Div([map_area]),
     # Tree graph to show the material most found
-    html.H3("See which material was found the most!"),
-        dcc.Graph(figure=tree_fig),
-    # Show Cellulose Acetate info
+        dcc.Graph(figure=brand_pie),
+        dcc.Graph(figure=mat_pie),
     html.Div([cell_ace]),
+        dcc.Graph(figure=obj_pie),
+    html.Hr(),
+    html.P('''
+        If the data was cleaner and not absolutely jumbled this tree graph would be
+        an excellent visualizer...I still added it to the site cause it simply looks cool
+        even if it's wonky!
+    '''),
+        dcc.Graph(figure=tree_fig)
+    # Show Cellulose Acetate info
     #html.H4("See which park had what!"),
     #    dcc.Graph(figure=sunburst_fig)
     ], 
