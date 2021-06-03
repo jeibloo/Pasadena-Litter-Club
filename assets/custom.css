@@ -17,3 +17,9 @@ p {
 .gif {
     height: 25px; width: 25px;
 }
+
+.head_text {
+    transform:  rotate(25deg);
+    font-size: 500%;
+    overflow-wrap: initial;
+}

@@ -39,7 +39,9 @@ SIDEBAR_STYLE = {
     "width": "20rem",
     "padding": "2rem 2rem",
     "background-color": "#77efff",
-    "overflow-y": "scroll"
+    "overflow-y": "scroll",
+    "border-right" : "5px dotted #F0FF71"
+    
 }
 CONTENT_STYLE = {
     "margin-left": "20rem",
@@ -56,8 +58,7 @@ map_fig = px.scatter_geo(litter,
             projection="equirectangular",
             width=None, height=None)
 # Mapbox?
-#map_key = os.environ["MAPBOX_KEY"]
-map_key = 'pk.eyJ1IjoiamFzb25ub3ZhIiwiYSI6ImNrcGNrMmk5djBuZngyd3A1bjVha3cybDcifQ.MfWorR0R8-KYh9lqMJf96g'
+map_key = os.environ["MAPBOX_KEY"]
 px.set_mapbox_access_token(map_key)
 mapbox_fig = px.scatter_mapbox(litter,
                                 lat="Lat",
@@ -97,7 +98,8 @@ mat_pie = px.pie(material_litter, values='amount', names='material', title='Most
 # Navigation sidebar
 sidebar = html.Div(
     [
-        html.H2("Water & Litter", className="display-4"),
+        html.Br(),
+        html.H2("Water & Litter", className="display-4, head_text"),
         html.Hr(),
         html.P(
             '''
