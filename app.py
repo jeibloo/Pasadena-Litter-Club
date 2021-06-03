@@ -183,10 +183,10 @@ cell_ace = dbc.Container(
     dbc.Row([
         dbc.Col(
             [
-                html.P('''Cellulose acetate (plastic fibers) is bad news! 
+                html.P('''Cellulose acetate (plastic fibers see the molecule to the right ->) is bad news! 
                 It's a plastic used as a filter for cigarettes, and in the process of being a filter
                 it absorbs all the bad chemicals such as nicotine and heavy metals from the cigarette. When it's
-                thrown onto the ground as it is commonly is, those same bad chemicals leach into the ground
+                thrown onto the ground as it commonly is, those same bad chemicals leach into the ground
                 polluting the soil and surrounding waters! EMPHASIS ON WATER!!! h20!''')
             ]
         ),
