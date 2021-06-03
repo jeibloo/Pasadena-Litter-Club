@@ -150,7 +150,7 @@ sidebar = html.Div(
                 html.Br(),
                 html.Br(),
                 dbc.NavLink("Donate to me maybe..",
-                            href="blah", active="exact", id="me"),
+                            href="https://ko-fi.com/jsn404", active="exact", id="me"),
                 html.Img(src='assets/banana.gif', className='gif')
             ],
             vertical=False,
@@ -170,8 +170,8 @@ map_area = dbc.Container(
         html.P('''
             The worst hotspots for trash were ironically where the no-smoking signs were. The cluster in the eastern part of
             Eaton Sunnyslope had a 100+ cigarette butts, new to unbelievably old—the paper had already disappeared and all
-            that was left was a husk of cellulose acetate. There were even a few pods for vapes scattered randomly around
-            the parks.
+            that was left was a husk of cellulose acetate. There were also a few pods for vapes scattered randomly around
+            the parks, fyi.
         '''),
         html.Hr()
     ])
@@ -185,7 +185,7 @@ cell_ace = dbc.Container(
                 It's a plastic used as a filter for cigarettes, and in the process of being a filter
                 it absorbs all the bad chemicals such as nicotine and heavy metals from the cigarette. When it's
                 thrown onto the ground as it is commonly is, those same bad chemicals leach into the ground
-                polluting the soil and surrounding waters!''')
+                polluting the soil and surrounding waters! EMPHASIS ON WATER!!! h20!''')
             ]
         ),
         dbc.Col(
@@ -232,8 +232,9 @@ pie_area = dbc.Container(
     html.Div([cell_ace]),
         dcc.Graph(figure=obj_pie),
         html.P('''
-        Wrappers were quite popular, or at least the torn pieces off the top of wrappers. It seems
-        many people likely threw away 80% of the wrapper but the last torn piece got lost easily.
+        Wrappers were quite popular, or at least the torn pieces off the top of wrappers. Whatever breaks down from these wrappers
+        eventually gets broken down into microplastics, no bueno. 
+        It seems many people likely threw away 80% of the wrapper but the last torn piece got lost easily.
         Or at least that's what I tell myself..
         ''')
     ])
