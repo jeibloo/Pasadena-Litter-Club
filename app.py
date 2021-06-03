@@ -86,7 +86,7 @@ brands_litter.loc[brands_litter['amount'] < 3, 'brand'] = 'random brands'
 material_litter.loc[material_litter['amount'] < 10, 'material'] = 'random materials'
 object_litter.loc[object_litter['amount'] < 10, 'object'] = 'random objects'
 
-brand_pie = px.pie(brands_litter, values='amount', names='brand', title='Litter Brands',
+brand_pie = px.pie(brands_litter, values='amount', names='brand', title='Most Littered Brands',
                     color_discrete_sequence=px.colors.sequential.RdBu).update_layout(autosize=True)
 obj_pie = px.pie(object_litter, values='amount', names='object', title='Most Common Objects Littered',
                     color_discrete_sequence=px.colors.sequential.Rainbow).update_layout(autosize=True)
@@ -156,7 +156,6 @@ sidebar = html.Div(
 
 map_area = dbc.Container(
     html.Div([
-        dcc.Graph(figure=mapbox_fig),
         html.P('''
             The sheer quantity of trash was suprising. The amount of trash numbered at around 1,210 individual pieces.
             Pasadena is a nice city but despite this the plague of litter is still a problem in public spaces!
@@ -189,22 +188,33 @@ cell_ace = dbc.Container(
     ])
 )
 
-# Main body
-content = html.Div([
-    html.Div(id="display-value"),
-    html.H1("Welcome!"),
-    html.Div([map_area]),
-    # Tree graph to show the material most found
+pie_area = dbc.Container(
+    html.Div([
         dcc.Graph(figure=brand_pie),
         dcc.Graph(figure=mat_pie),
     html.Div([cell_ace]),
         dcc.Graph(figure=obj_pie),
-    html.Hr(),
+    ])
+)
+
+tree_area = dbc.Container(
     html.P('''
         If the data was cleaner and not absolutely jumbled this tree graph would be
         an excellent visualizer...I still added it to the site cause it simply looks cool
         even if it's wonky!
     '''),
+)
+
+# Main body
+content = html.Div([
+    html.Div(id="display-value"),
+    html.H1("Welcome!"),
+    dcc.Graph(figure=mapbox_fig),
+    html.Div([map_area]),
+    # Tree graph to show the material most found
+    html.Div([pie_area]),
+    html.Hr(),
+    html.Div([tree_area]),
         dcc.Graph(figure=tree_fig)
     # Show Cellulose Acetate info
     #html.H4("See which park had what!"),
