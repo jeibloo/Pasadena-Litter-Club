@@ -38,7 +38,8 @@ SIDEBAR_STYLE = {
     "bottom": 0,
     "width": "20rem",
     "padding": "2rem 2rem",
-    "background-color": "#77efff"
+    "background-color": "#77efff",
+    "overflow-y": "scroll"
 }
 CONTENT_STYLE = {
     "margin-left": "20rem",
@@ -55,8 +56,7 @@ map_fig = px.scatter_geo(litter,
             projection="equirectangular",
             width=None, height=None)
 # Mapbox?
-#map_key = os.environ["MAPBOX_KEY"]
-map_key = 'pk.eyJ1IjoiamFzb25ub3ZhIiwiYSI6ImNrcGNrMmk5djBuZngyd3A1bjVha3cybDcifQ.MfWorR0R8-KYh9lqMJf96g'
+map_key = os.environ["MAPBOX_KEY"]
 px.set_mapbox_access_token(map_key)
 mapbox_fig = px.scatter_mapbox(litter,
                                 lat="Lat",
@@ -120,7 +120,7 @@ sidebar = html.Div(
             '''
             Data is organised into three categories: object such as 'cigarettebutt',
             material such as 'celluloseacetate', and brand such as 'Marlboro'. Most
-            detritus has no brand, so it will be labelled null when hovered over on
+            detritus has no brand, so it won't be labelled with any brand when hovered over on
             the map.
             '''
         ),
@@ -132,9 +132,10 @@ sidebar = html.Div(
         ),
         html.P(
             '''
-            The map is centered on the Gwinn (bottom) and Eaton Sunnyslope (top) parks,
+            The map is centered on the Gwinn and Eaton Sunnyslope parks,
             data is also from the Ernest E. Debs Regional Park area
-            around 11.82 km (7.35 mi) away, which you can scroll to if you zoom out.
+            around 11.82 km (7.35 mi) away, which you can scroll to if you zoom out
+            and feel like exhausting your scroll wheel :P
             '''
         ),
         html.Hr(),
@@ -158,12 +159,13 @@ map_area = dbc.Container(
     html.Div([
         html.P('''
             The sheer quantity of trash was suprising. The amount of trash numbered at around 1,210 individual pieces.
-            Pasadena is a nice city but despite this the plague of litter is still a problem in public spaces!
+            Pasadena is a nice city but despite this the plague of litter is still a problem in some public spaces!
         '''),
         html.P('''
             The worst hotspots for trash were ironically where the no-smoking signs were. The cluster in the eastern part of
             Eaton Sunnyslope had a 100+ cigarette butts, new to unbelievably old—the paper had already disappeared and all
-            that was left was a husk of cellulose acetate.
+            that was left was a husk of cellulose acetate. There were even a few pods for vapes scattered randomly around
+            the parks.
         '''),
         html.Hr()
     ])
@@ -191,9 +193,43 @@ cell_ace = dbc.Container(
 pie_area = dbc.Container(
     html.Div([
         dcc.Graph(figure=brand_pie),
+        html.Br(),
+        dbc.Row([
+            dbc.Col(
+                [
+                    html.Img(src='assets/ssweets.jpg', className='img-fluid')
+                ]
+            ),
+            dbc.Col(
+                [
+                    html.P('''
+                    SwisherSweets is the absolute bain of my existence, the packaging (torn-off tops and sometimes the whole
+                    thing) seemed to spawn sponteanously in these parks! I also found some cigarettes near the bus
+                    stop that had Traditional Chinese on it, I wondered what brand it was—interesting international litter!
+                    I expected far more Starbucks branded goods, the idea of walking in the park and drinking a latte I guess
+                    was my idea, but it was a happy surprise to never see that kind of trash.
+                    Marlboro was assumed for some entries so it's not as significant as it may look at first.
+                    '''),
+                    html.Hr(),
+                    html.P('''
+                    The nerf darts were also an interesting find. They all seemed the same size, so presumably they're
+                    from the same super-cool nerf gun.
+                    '''),
+                    html.P('''
+                    Finding the old rubber flags from the city were kinda funny, there's always something missed after doing
+                    significant construction or parks-and-rec work!
+                    ''')
+                ]
+            )
+        ]),
         dcc.Graph(figure=mat_pie),
     html.Div([cell_ace]),
         dcc.Graph(figure=obj_pie),
+        html.P('''
+        Wrappers were quite popular, or at least the torn pieces off the top of wrappers. It seems
+        many people likely threw away 80% of the wrapper but the last torn piece got lost easily.
+        Or at least that's what I tell myself..
+        ''')
     ])
 )
 
