@@ -56,7 +56,8 @@ map_fig = px.scatter_geo(litter,
             projection="equirectangular",
             width=None, height=None)
 # Mapbox?
-map_key = os.environ["MAPBOX_KEY"]
+#map_key = os.environ["MAPBOX_KEY"]
+map_key = 'pk.eyJ1IjoiamFzb25ub3ZhIiwiYSI6ImNrcGNrMmk5djBuZngyd3A1bjVha3cybDcifQ.MfWorR0R8-KYh9lqMJf96g'
 px.set_mapbox_access_token(map_key)
 mapbox_fig = px.scatter_mapbox(litter,
                                 lat="Lat",
