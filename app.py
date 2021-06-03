@@ -116,18 +116,15 @@ sidebar = html.Div(
             for areas that were inaccesible.
             '''
         ),
+        html.P('''Data organised into three categories:'''),
+        html.P('''1) object   : 'cigarettebutt' '''),
+        html.P('''2) material : 'celluloseacetate' '''),
+        html.P('''3) brand    : 'Marlboro' '''),
         html.P(
             '''
-            Data is organised into three categories: object such as 'cigarettebutt',
-            material such as 'celluloseacetate', and brand such as 'Marlboro'. Most
-            detritus has no brand, so it won't be labelled with any brand when hovered over on
-            the map.
-            '''
-        ),
-        html.P(
-            '''
-            The data is not perfect, there are mistakes, but an honest attempt was made
-            in labelling the appropriate designations for all 1200+ entries.
+            Detritus has no brand, so it won't be labelled with any brand when hovered over on
+            the map. The data is not perfect, there are mistakes, but an honest attempt was made
+            in labelling for all 1200+ entries.
             '''
         ),
         html.P(
@@ -142,17 +139,25 @@ sidebar = html.Div(
         dbc.Nav(
             [
                 html.Br(),
-                dbc.NavLink("Contact your Representative to support the Green New Deal!", 
+                dbc.NavLink("Support -> Green New Deal!", 
                             href="https://www.house.gov/representatives/find-your-representative", active="exact"),
+                html.Img(src='assets/leaf.gif', className='gif'),
                 html.Br(),
-                dbc.NavLink("Donate to a clean water charity!", 
-                            href="https://www.charitywater.org/donate", active="exact")
+                dbc.NavLink("Donate -> clean water charity!", 
+                            href="https://www.charitywater.org/donate", active="exact"),
+                html.Img(src='assets/water.gif', className='gif'),
+                html.Br(),
+                html.Br(),
+                dbc.NavLink("Donate to me maybe..",
+                            href="blah", active="exact", id="me"),
+                html.Img(src='assets/banana.gif', className='gif')
             ],
             vertical=False,
             pills=True,
         ),
     ],
     style=SIDEBAR_STYLE,
+    id="sidebar"
 )
 
 map_area = dbc.Container(
@@ -263,10 +268,11 @@ app.layout = html.Div([html.Div(id="loading"),dcc.Location(id="url"), sidebar, c
 
 #@app.callback(dash.dependencies.Output('display-value', 'children'),
 #              [dash.dependencies.Input('dropdown', 'value')])
-app.callback(dash.dependencies.Output('display-value', 'children'))
-def display_value(value):
-    if value == "/":
-        return 'You have selected "{}"'.format(value)
+#@app.callback(dash.dependencies.Output('display-value', 'children'),
+#                                [Input("url", "value")])
+#def display_value(value):
+#    if value == "/":
+#        return 'You have selected "{}"'.format(value)
 
 if __name__ == '__main__':
     app.run_server(debug=False)

@@ -1,8 +1,19 @@
 h1, h3 {
     text-align: center;
 }
+p {
+    font-size: larger;
+}
 
 #output-graph {
     margin: 0rem auto;
     justify-content: center;
+}
+
+#me {
+    font-size: xx-small;
+}
+
+.gif {
+    height: 25px; width: 25px;
 }
